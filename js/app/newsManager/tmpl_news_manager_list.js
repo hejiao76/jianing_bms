@@ -1,0 +1,48 @@
+
+define([],function (){
+    return [
+        '{{if data.result && data.result.length>0}}',
+            '{{each data.result as item index}}',
+            '<tr data-id="{{item.id}}">',
+                '<td class="tl">{{(data.currentPage-1)*data.pageRecorders+index+1}}</td>',
+                '<td>',
+                    '{{item.title || "" }}',
+                '</td>',
+                '<td>',
+                '{{item.tagIds || ""}}',
+                '</td>',
+                '<td>',
+                    '{{if item.status==0}}',
+                        '<span data-id="{{item.id}}" data-status="0" class="cp status_span_js">未发布</span>',
+                    '{{else}}',
+                        '<span data-id="{{item.id}}" data-status="1" class="cp status_span_js" style="color:green">已发布</span>',
+                    '{{/if}}',
+                    //'{{item.status==0 ? "未发布":"已发布"}}',
+                '</td>',
+                '<td>',
+                    '{{if item.status==1 && item.disabled==1}}',
+
+                        '<span data-id="{{item.id}}" data-isFirst="1" class="cp setFirstShow_span_js" style="color:green">首页展示</span>',
+                    '{{else if item.status==1}}',
+                        '<span data-id="{{item.id}}" data-isFirst="0" class="cp setFirstShow_span_js">暂未首页</span>',
+                    '{{/if}}',
+                //'{{item.status==0 ? "未发布":"已发布"}}',
+                '</td>',
+                '<td>',
+                    '<img data-id="{{item.id}}" data-newsUrl="{{item.cover}}" data-url="{{item.url || \"\"}}" class="cp editNews_js" src="img/icon3.png" title="编辑">',
+                    '<img data-id="{{item.id}}"  class="cp ml20 deleteNews_js "  src="img/icon6.png"  title="删除">',
+                '</td>',
+                '<td class="sort_col_js hide">',
+                    '<img data-id="{{item.id}}" data-option="prev"  class="cp ml20 sort_prev_js"  src="img/icon9.png"  title="上移">',
+                    '<img data-id="{{item.id}}" data-option="next"  class="cp ml20 sort_next_js"  src="img/icon10.png"  title="下移">',
+                '</td>',
+            '</tr>',
+            '{{/each}}',
+        '{{else}}',
+        '<tr>',
+            '<td class="tl" colspan="6">暂无数据</td>',
+        '</tr>',
+        '{{/if}}'
+
+    ].join('');
+});

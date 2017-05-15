@@ -1,0 +1,15 @@
+
+    <img class="logo" src="img/logo.png">
+    <span class="vm">家宁装修网后台管理</span>
+
+<ul>
+    <li>
+        <img src="img/icon1.png" class="vm mr15">
+        <span class="vm">管理员账号</span>
+    </li>
+
+    <li id="loginOut">
+        <img src="img/icon2.png" class="vm mr15">
+        <span class="vm">  退出</span>
+    </li>
+</ul>

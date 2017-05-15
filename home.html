@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>家宁装修后台管理系统</title>
+    <link rel="stylesheet" href="css/bootstrap.css" />
+    <link rel="stylesheet" href="js/lib/jqGrid5/css/ui.jqgrid-bootstrap.css" />
+    <!--<link rel="stylesheet" href="js/lib/jquery.pagination/pagination.css" />-->
+    <link rel="stylesheet" href="css/commom.css" />
+    <!--<link rel="stylesheet" href="css/header.css" />-->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="js/lib/jquery.pagination/pagination.css" />
+</head>
+<body>
+<header>
+    <!--#include file="./inc/header.shtml"-->
+</header>
+<section class="con_width clear_fixed">
+    <div class="aside fleft col-sm-2">
+        <!--#include file="./inc/left.shtml"-->
+    </div>
+    <div id="main-content" class="fleft col-sm-10" >
+        <!---内容区-->
+        <img class="weclome_img" style="max-width:1100px;max-height:400px;" src="./img/welcome.png">
+    </div>
+</section>
+<!-------------提示框相关代码-------------->
+<div class="modal fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h4 class="modal-title" id="myModalLabel">提示</h4></div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+<!-------------提示框相关代码结束-------------->
+<script data-main="js/app/home/main" src="js/lib/requirejs/2.1.15.js" type="text/javascript"></script>
+</body>
+</html>

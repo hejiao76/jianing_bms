@@ -1,0 +1,26 @@
+<ul id="left_menu_ul">
+    <li id="news_manager_li" class="">
+        <i class="aside_all black_01"></i>
+        <span class="aside_font" >装修那点事</span>
+    </li>
+    <li id="bm_store_manager_li" class="">
+        <i class="aside_all black_02"></i>
+        <span class="aside_font" >建材库管理</span>
+    </li>
+    <!--<li id="news_manager_li" class="">-->
+        <!--<i class="aside_all black_03"></i>-->
+        <!--<span class="aside_font" >新闻管理</span>-->
+    <!--</li>-->
+    <!--<li id="train_manager_li" class="">-->
+        <!--<i class="aside_all black_04"></i>-->
+        <!--<span class="aside_font" >培训管理</span>-->
+    <!--</li>-->
+    <!--<li id="brand_manager_li" class="">-->
+        <!--<i class="aside_all black_05"></i>-->
+        <!--<span class="aside_font" >品牌管理</span>-->
+    <!--</li>-->
+    <!--<li id="job_manager_li" class="">-->
+        <!--<i class="aside_all black_06"></i>-->
+        <!--<span class="aside_font" >招聘管理</span>-->
+    <!--</li>-->
+</ul>
