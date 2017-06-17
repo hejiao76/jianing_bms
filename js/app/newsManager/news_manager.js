@@ -189,23 +189,64 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             // btn.find('label').text('点击上传');
             _this.val('');
         }else{
+
             $.ajaxFileUpload({
-                url: URL.baseURLForward + 'cmsContentFile/addFile.action',
+                url: URL.baseURLForward1 + 'api/images/upload',
                 type:"post",
                 secureuri: false,
-                fileElementId: "newsFileInput",
-                data: {token: BaseCookie.getToken()},
-                dataType: 'json',
+                fileElementId: 'newsFileInput',
+                data: {apikey:'flzxsqcysyhljt',prefix:'jianing',token:tokenTmp},
+                //dataType: 'json',
                 success: function(data, status){
-                    if(status == "success"){
-                        $("#newsUrl").val(data.result.filePath);
+                    if(status=="success"){
+                        var imgUrl=JSON.parse($(data).find("pre").html()).data[0];
+                        $("#newsUrl").val(imgUrl);
                         $("#newsFileInput").hide();
-                        $("#newsImgPreview").attr("src",data.result.filePath).show();
-                    }else{
-                        console.log(status);
+                        $("#newsImgPreview").attr("src",imgUrl).show();
                     }
+                    // //alert($(data).find("body").html())
+                    // var thisdata = JSON.parse($(data).find("pre").html()).data[0];
+                    // $("#newsUrl").val(data.result.filePath);
+                    // $("#newsFileInput").hide();
+                    // $("#newsImgPreview").attr("src",data.result.filePath).show();
+                    // var oldlist = localStorage.getItem('phoneList');
+                    // var oldcommentlist=localStorage.getItem('commentList')
+                    // if(!oldlist || oldlist.length==0){
+                    //     oldlist=[];
+                    //     oldcommentlist=[];
+                    // }else {
+                    //     oldlist = oldlist.split('<%%>');
+                    //     oldcommentlist=oldcommentlist.split("<%%>");
+                    // }
+                    // oldlist.push(thisdata);
+                    // oldcommentlist.push("");
+                    // localStorage.setItem('phoneList',oldlist.join("<%%>"));
+                    // localStorage.setItem('commentList',oldcommentlist.join("<%%>"));
+                    //
+                    // renderContainer(oldlist);
+                },
+                error : function (){
+                    //alert("error");
                 }
             })
+
+            // $.ajaxFileUpload({
+            //     url: URL.baseURLForward + 'cmsContentFile/addFile.action',
+            //     type:"post",
+            //     secureuri: false,
+            //     fileElementId: "newsFileInput",
+            //     data: {token: BaseCookie.getToken()},
+            //     dataType: 'json',
+            //     success: function(data, status){
+            //         if(status == "success"){
+            //             $("#newsUrl").val(data.result.filePath);
+            //             $("#newsFileInput").hide();
+            //             $("#newsImgPreview").attr("src",data.result.filePath).show();
+            //         }else{
+            //             console.log(status);
+            //         }
+            //     }
+            // })
         }
     }
     var saveSortNews =function (){
@@ -487,18 +528,20 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         var title=$("#newsTitle").val();
         var author=$("#newsAuthor").val();
         var parentId=$("#newsTypeSelect").val();
+        var score=$("#scoreSelect").val();
         var description =$("#newsDesc").val();
-        var cover=$("#newsUrl").val();
+        var focusimg=$("#newsUrl").val();
         var content=UE.getEditor('container').getContent();
         var contentTxt=UE.getEditor('container').getContentTxt();
+
         if(!title){
             Util.showTipMsg("请输入新闻标题");
             return false;
         }
-        // if(!author){
-        //     Util.showTipMsg("请输入短标题");
-        //     return false;
-        // }
+        if(!author){
+            Util.showTipMsg("请输入文章作者");
+            return false;
+        }
         if(!parentId){
             Util.showTipMsg("请选择新闻类型");
             return false;
@@ -507,7 +550,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             Util.showTipMsg("请输入新闻简介");
             return false;
         }
-        if(!cover){
+        if(!focusimg){
             Util.showTipMsg("请上传新闻图片");
             return false;
         }
@@ -521,8 +564,10 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             author:author,
             parentId:parentId,
             description:description,
-            cover:cover,
-            content:content,
+            score:score,
+            focus:1,
+            focusimg:focusimg,
+            details:content,
             tagIds:$("#newsTypeSelect").find("option:selected").text()
 
         }
@@ -550,12 +595,20 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             addNews(param);
         }
     };
+    var userInfo=function (){
+        var userId=$.cookie(Final.USER_ID);
+        var token=$.cookie(Final.TOKEN);
+        var userName=$.cookie(Final.USER_NAME);
+        return {userId:userId,token:token,userName};
+    };
     var addNews = function (param){
         if(param){
-            param.categoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
+            param.common=userInfo();
+            //param.categoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
             $.ajax({
-                url:URL.baseURLForward+"cmsContent/addContent.action",
-                data: param,
+                contentType:"application/json",
+                url:URL.baseURLForward+"back/decoratenew/saveDecorateNew",
+                data: JSON.stringify(param),
                 type: 'post',
                 headers: {
                     token:tokenTmp

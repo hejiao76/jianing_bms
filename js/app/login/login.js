@@ -81,22 +81,25 @@ define(['app/baseURL', 'baseCookie', 'app/baseFinal'], function ( URL, BaseCooki
             //获取密码
             var pwd=$('#PassWord').val();
             //发送ajax请求到后台
-            var param={loginName:userName,password: $.md5(pwd)}; //JSON字符串
+            var param={username:userName,password: pwd}; //JSON字符串
             //console.log("输出用户名密码");
             //console.log(param);
             //return;
             $.ajax({
-                url:URL.baseURLForward+"user/login.action",
-                data:param,
+                contentType:"application/json; charset=utf-8",
+                url:URL.baseURLForward+"/back/user/login",
+                data:JSON.stringify(param),
                 type: 'post',
+                dataType:"json",
                 success:function(response){
-                    if(response.status==0){
+                    if(response.code==200){
                       //  BaseCookie.add("token",response.result.token);
-                        $.cookie(Final.TOKEN,response.result.token,{expires: 1, path: '/'})
-                        $.cookie(Final.USER_NAME,response.result.userName,{expires: 1, path: '/'})
+                        $.cookie(Final.TOKEN,response.token,{expires: 1, path: '/'});
+                        $.cookie(Final.USER_NAME,response.username,{expires: 1, path: '/'});
+                        $.cookie(Final.USER_ID,response.userid,{expires: 1, path: '/'})
                         window.location.href="home.html";
                     }else{
-                        $("#errormsg").css("color", "red").text(response.message);
+                        $("#errormsg").css("color", "red").text(response.msg);
                     }
                 },
                 failure:function(e){

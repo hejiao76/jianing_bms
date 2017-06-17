@@ -11,6 +11,7 @@ define([], function() {
     var baseURLForward=http+":"+"//"+ip1+"/";
     return {
         baseURL: baseURL,
-        baseURLForward:"/action/"
+        baseURLForward:"/action/",
+        baseURLForward1:"/action1/"
     }
 })
