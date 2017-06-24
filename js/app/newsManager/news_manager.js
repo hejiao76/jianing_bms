@@ -59,7 +59,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
 
     function pageselectCallback(page_index, jq){
         console.log(page_index);
-        requestNewsList({currentPage:page_index+1});
+        requestNewsList({pageNo:page_index+1});
         return false;
     }
     var initEvent = function() {
@@ -123,7 +123,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         //                 }
         //                 renderNewsManager();
         //             }else{
-        //                 console.log("请求异常");
+        //                 console.log("请求异常");scoreSelect
         //             }
         //         }
         //     });
@@ -132,6 +132,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         // }
     };
     var requestSecondModuleList = function (){
+        return;
         var newsCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
         if(newsCategoryId!=null){
             var param={parentId:newsCategoryId}
@@ -338,26 +339,29 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
      */
     var requestNewsListPaginationInfo = function (param){
         currentPageTemp=1;
-        var param= $.extend({categoryId:localStorage.getItem(Final.NEWS_CATEGORY_ID)},param,{currentPage:1,pageRecorders:pageRecorders});
+        var param= $.extend(userInfo(),param || {});
+        param.pageSize=pageRecorders;
         $.ajax({
-            url:URL.baseURLForward+"cmsContent/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
-            data: param,
-            type: 'get',
-            headers: {
-                token:tokenTmp
-            },
+            url:URL.baseURLForward+"back/decoratenew/decorateNewList", // URL.baseURL9 + 'jijing_answers/web_mark',
+            data: JSON.stringify({common:param}),
+            type: 'POST',
+            contentType:"application/json",
             success: function (response){
-                if(response.totalRows>0){
-                    var opt={
-                        current_page:response.currentPage,
-                        // maxentries:response.totalRows,
-                        item_per_page:response.pageRecorders
-                    }
-                    initPagination(response.totalRows,opt);
+                if(response.code==200){
+                    var rdata=response.data
+                    if(rdata.totalCount>0){
+                        var opt={
+                            current_page:rdata.pageNo,
+                            // maxentries:response.totalRows,
+                            item_per_page:rdata.pageSize
+                        }
+                        initPagination(rdata.totalCount,opt);
 
-                }else{
-                    requestNewsList({currentPage:1})
+                    }else{
+                        requestNewsList({pageNo:1,pageSize:10})
+                    }
                 }
+
             }
         });
 
@@ -366,43 +370,46 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
      * 请求news列表数据
      */
     var requestNewsList = function (param){
-        var param= $.extend({categoryId:localStorage.getItem(Final.NEWS_CATEGORY_ID),pageRecorders:pageRecorders},param || {});
+        var param= $.extend(userInfo(),param || {});
+        param.pageSize=pageRecorders;
         $.ajax({
-            url:URL.baseURLForward+"cmsContent/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
-            data: param,
-            type: 'get',
-            headers: {
-                token:tokenTmp
-            },
+            url:URL.baseURLForward+"back/decoratenew/decorateNewList", // URL.baseURL9 + 'jijing_answers/web_mark',
+            data: JSON.stringify({common:param}),
+            type: 'post',
+            contentType:"application/json",
             success: function (response){
-                if(response.totalRows>-1){
-                    parentIdTmp=param.parentId;
-                    currentPageTemp=response.currentPage;
-                    var data={};
-                    data.result=response.result;
-                    data.Final=Final;
-                    data.currentPage=param.currentPage;
-                    data.pageRecorders=param.pageRecorders;
-                    renderListPanel(data);
-                    // var opt={
-                    //     current_page:response.currentPage,
-                    //     maxentries:response.totalRows,
-                    //     items_per_page:response.pageRecorders
-                    // }
-                    // initPagination(response.totalRows,opt);
-                    // if(!isInitPagination){
-                    //     isInitPagination=true;
-                    //     var opt={
-                    //         current_page:response.currentPage,
-                    //         maxentries:response.totalRows,
-                    //         items_per_page:response.pageRecorders
-                    //     }
-                    //     initPagination(response.totalRows,opt);
-                    // }
+                if(response.code ==200){
+                    var rdata=response.data
+                    if(rdata.totalCount>-1){
+                        parentIdTmp=param.parentId;
+                        currentPageTemp=rdata.currentPage;
+                        var data={};
+                        data.result=rdata.result;
+                        data.Final=Final;
+                        data.currentPage=param.pageNo;
+                        data.pageRecorders=param.pageSize;
+                        renderListPanel(data);
+                        // var opt={
+                        //     current_page:response.currentPage,
+                        //     maxentries:response.totalRows,
+                        //     items_per_page:response.pageRecorders
+                        // }
+                        // initPagination(response.totalRows,opt);
+                        // if(!isInitPagination){
+                        //     isInitPagination=true;
+                        //     var opt={
+                        //         current_page:response.currentPage,
+                        //         maxentries:response.totalRows,
+                        //         items_per_page:response.pageRecorders
+                        //     }
+                        //     initPagination(response.totalRows,opt);
+                        // }
 
-                }else{
-                    console.log("请求异常");
+                    }else{
+                        console.log("请求异常");
+                    }
                 }
+
             }
         });
 
@@ -468,17 +475,15 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     };
     var requestNewsDetail = function (newsId){
         if(newsId){
-            var param={id:newsId};
+            var param=$.extend({id:newsId},{common:userInfo()});
             $.ajax({
-                url:URL.baseURLForward+"cmsContent/getContent.action", // URL.baseURL9 + 'jijing_answers/web_mark',
-                data: param,
-                type: 'get',
-                headers: {
-                    token:tokenTmp
-                },
+                url:URL.baseURLForward+"back/decoratenew/decorateNewInfo", // URL.baseURL9 + 'jijing_answers/web_mark',
+                data: JSON.stringify(param),
+                type: 'post',
+                contentType:"application/json",
                 success: function (response){
-                    if(response.status==0){
-                        showEditNewsPanel(response.result)
+                    if(response.code==200){
+                        showEditNewsPanel(response.info)
                     }else{
                         console.log("请求异常");
                     }
@@ -505,17 +510,18 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                             //imageUrl:"/action/cmsCategory/getList.action?parentId=9999",
                         });
                         editor.on("ready",function (){
-                            editor.setContent(data.content);
+                            editor.setContent(data.details);
                         });
                         window.setTimeout(function (){
 
                             $("#newsTitle").val(data.title || "");
                             $("#newsAuthor").val(data.author || "");
-                            $("#newsTypeSelect").val(data.parentId || "");
-                            $("#newsDesc").val(data.description || "");
-                            $("#newsImgPreview").attr("src",data.cover).show();
+                            $("#newsTypeSelect").val(data.type || "");
+                            $("#scoreSelect").val(data.score || "");
+                            // $("#newsDesc").val(data.description || "");
+                            // $("#newsImgPreview").attr("src",data.cover).show();
                             $("#newsFileInput").hide();
-                            $("#newsUrl").val(data.cover);
+                            $("#newsUrl").val(data.focusimg);
                             $("#addNewsSaveBtn").attr("data-id",data.id);
                             // $("#newsTypeSelect").val(data.)
                         },1000)
@@ -527,7 +533,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     var validAndReturnNewsParam = function (){
         var title=$("#newsTitle").val();
         var author=$("#newsAuthor").val();
-        var parentId=$("#newsTypeSelect").val();
+        var type=$("#newsTypeSelect").val();
         var score=$("#scoreSelect").val();
         var description =$("#newsDesc").val();
         var focusimg=$("#newsUrl").val();
@@ -542,14 +548,14 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             Util.showTipMsg("请输入文章作者");
             return false;
         }
-        if(!parentId){
+        if(!type){
             Util.showTipMsg("请选择新闻类型");
             return false;
         }
-        if(!description){
-            Util.showTipMsg("请输入新闻简介");
-            return false;
-        }
+        // if(!description){
+        //     Util.showTipMsg("请输入新闻简介");
+        //     return false;
+        // }
         if(!focusimg){
             Util.showTipMsg("请上传新闻图片");
             return false;
@@ -562,7 +568,8 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         var param={
             title:title,
             author:author,
-            parentId:parentId,
+            flag:1,
+            type:type,
             description:description,
             score:score,
             focus:1,
@@ -599,7 +606,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         var userId=$.cookie(Final.USER_ID);
         var token=$.cookie(Final.TOKEN);
         var userName=$.cookie(Final.USER_NAME);
-        return {userId:userId,token:token,userName};
+        return {userId:userId,token:token,userName:userName};
     };
     var addNews = function (param){
         if(param){
@@ -615,7 +622,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                 },
                 success: function (response){
                     $("#addNews").modal("hide");
-                    if(response.status==0){
+                    if(response.code==200){
                         window.setTimeout(function (){
                             Util.showTipMsg("操作成功",toNewsList);
                         },600);
@@ -638,16 +645,16 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     }
     var deleteNewsRequest = function (param){
         if(param){
+            param=$.extend(param,{common:userInfo()})
+            debugger;
             $.ajax({
-                url:URL.baseURLForward+"cmsContent/deleteContent.action",
-                data: param,
+                url:URL.baseURLForward+"back/decoratenew/delDecorateNew",
+                data: JSON.stringify(param),
                 type: 'post',
-                headers: {
-                    token:tokenTmp
-                },
+                contentType: 'application',
                 success: function (response){
                     $("#deleteNewsModal").modal("hide");
-                    if(response.status==0){
+                    if(response.code==200){
                         window.setTimeout(function (){
                             Util.showTipMsg("删除成功",requestNewsListPaginationInfo);
                         },600);
