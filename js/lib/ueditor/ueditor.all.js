@@ -24521,10 +24521,10 @@ UE.plugin.register('simpleupload', function (){
                             body = (iframe.contentDocument || iframe.contentWindow.document).body,
                             result = body.innerText || body.textContent || '';
                         json = (new Function("return " + result))();
+                        /*自定义改动*/
                         //link = me.options.imageUrlPrefix + json.url;
-                        //debugger;
-                        if(json.result) {
-                            link = json.result.filePath;
+                        if(json.data) {
+                            link = json.data[0];
                             loader = me.document.getElementById(loadingId);
                             loader.setAttribute('src', link);
                             loader.setAttribute('_src', link);
@@ -24568,7 +24568,26 @@ UE.plugin.register('simpleupload', function (){
                 }
 
                 domUtils.on(iframe, 'load', callback);
-                form.action = "/action/cmsContentFile/addFile.action"; //utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf('?') == -1 ? '?':'&') + params);
+                /*自定义改动*/
+                var i = document.createElement("input");
+                i.type = "hidden";
+                i.value = "flzxsqcysyhljt";
+                i.name = "apikey";
+                form.appendChild(i);
+                var j = document.createElement("input");
+                j.type = "hidden";
+                j.value = "jianing";
+                j.name = "prefix";
+                form.appendChild(j);
+                var k = document.createElement("input");
+                k.type = "hidden";
+                k.value = $.cookie("token");
+                k.name = "token";
+                form.appendChild(k);
+                /*自定义改动*/
+
+               // apikey:'flzxsqcysyhljt',prefix:'jianing',token:tokenTmp
+                form.action = utils.formatUrl(imageActionUrl + (imageActionUrl.indexOf('?') == -1 ? '?':'&') + params);
                 form.submit();
             });
 

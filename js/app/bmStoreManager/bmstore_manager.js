@@ -12,9 +12,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         router,
         editor,
         TMPL = {
-            tmpl_news_manager: 'app/newsManager/tmpl_news_manager',
-            tmpl_news_manager_list: 'app/newsManager/tmpl_news_manager_list',
-            tmpl_news_manager_edit: 'app/newsManager/tmpl_news_manager_edit'
+            tmpl_bmstore_manager: 'app/bmstoreManager/tmpl_bmstore_manager',
+            tmpl_bmstore_manager_list: 'app/bmstoreManager/tmpl_bmstore_manager_list',
+            tmpl_bmstore_manager_edit: 'app/bmstoreManager/tmpl_bmstore_manager_edit'
         };
 
     var init = function(conf) {
@@ -58,10 +58,10 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     var initRouter = function (){
         if(router){
             console.log("initRouter");
-            router.on("once","/news_manager_edit/:newsId",function (newsId){
-                requestNewsDetail(newsId)
+            router.on("once","/bmstore_manager_edit/:bmstoreId",function (bmstoreId){
+                requestNewsDetail(bmstoreId)
             }); //编辑路由回调
-            router.on("once","/news_manager_add",showAddNewsPanel); //编辑路由回调
+            router.on("once","/bmstore_manager_add",showAddNewsPanel); //编辑路由回调
         }
     };
     var initPagination = function(totalCount,opt) {
@@ -84,21 +84,21 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     }
     var initEvent = function() {
         $(document).off("click","#addNewsBtn").on("click","#addNewsBtn",function (){
-            window.location.href = window.location.href.split("#")[0] + "#news_manager_add";
+            window.location.href = window.location.href.split("#")[0] + "#bmstore_manager_add";
         });
         $(document).off("click","#previewNewsBtn").on("click","#previewNewsBtn",previewNewsFn);
         $(document).off("click","#addNewsSaveBtn").on("click","#addNewsSaveBtn",addNewsFn);
         $(document).off("click",".editNews_js").on("click",".editNews_js",function (){
-            var newsId=$(this).attr("data-id");
-            if(newsId){
-                window.location.href = window.location.href.split("#")[0] + "#news_manager_edit/"+newsId;
+            var bmstoreId=$(this).attr("data-id");
+            if(bmstoreId){
+                window.location.href = window.location.href.split("#")[0] + "#bmstore_manager_edit/"+bmstoreId;
             }
         })
 
         $(document).off("click","#sortNewsBtn").on("click","#sortNewsBtn",showSortNewsCol);
         $(document).off("click","#saveSortNewsBtn").on("click","#saveSortNewsBtn",saveSortNews);
-        $(document).off("change","#newsFileInput").on("change","#newsFileInput",uploadNewsImg);
-        $(document).off("click","#newsImgPreview").on("click","#newsImgPreview",triggerFileUpload);
+        $(document).off("change","#bmstoreFileInput").on("change","#bmstoreFileInput",uploadNewsImg);
+        $(document).off("click","#bmstoreImgPreview").on("click","#bmstoreImgPreview",triggerFileUpload);
         $(document).off("click",".status_span_js").on("click",".status_span_js",statusSpanClickFn);
         $(document).off("click",".setFirstShow_span_js").on("click",".setFirstShow_span_js",setFirstShowSpanClickFn)
 
@@ -112,15 +112,15 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         // $(document).off("click","#cancelModal .surebtn_js").on("click","#cancelModal .surebtn_js",toCancelOrder);
     };
     var toNewsList = function (){
-        window.location.href = window.location.href.split("#")[0]+"#news_manager";
+        window.location.href = window.location.href.split("#")[0]+"#building_materials_store";
     }
     /**
      * 同步新闻模块ID
      */
     var asyncNewsModuleId = function (){
-        renderNewsManager();
-        // var newsCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
-        // if(newsCategoryId==null){
+        renderbmstoreManager();
+        // var bmstoreCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
+        // if(bmstoreCategoryId==null){
         //     var param={parentId:0}
         //     $.ajax({
         //         url:URL.baseURLForward+"cmsCategory/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
@@ -141,21 +141,21 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         //                 if(localStorage.getItem(Final.NEWS_CATEGORY_ID)==null){
         //                     localStorage.setItem(Final.NEWS_CATEGORY_ID,3);
         //                 }
-        //                 renderNewsManager();
+        //                 renderbmstoreManager();
         //             }else{
         //                 console.log("请求异常");scoreSelect
         //             }
         //         }
         //     });
         // }else {
-        //     renderNewsManager();
+        //     renderbmstoreManager();
         // }
     };
     var requestSecondModuleList = function (){
         return;
-        var newsCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
-        if(newsCategoryId!=null){
-            var param={parentId:newsCategoryId}
+        var bmstoreCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
+        if(bmstoreCategoryId!=null){
+            var param={parentId:bmstoreCategoryId}
             $.ajax({
                 url:URL.baseURLForward+"cmsCategory/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
                 data: param,
@@ -180,20 +180,20 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                 var item=data[i];
                 str+='<option value="'+item.id+'">'+item.name+'</option>'
             }
-            $("#newsTypeSelect").html(str);
+            $("#bmstoreTypeSelect").html(str);
         }
 
     }
     var showDeleteNews = function (){
-        var newsId=$(this).attr("data-id");
-        if(newsId){
-            $("#deleteNews_sure_js").attr("data-id",newsId);
+        var bmstoreId=$(this).attr("data-id");
+        if(bmstoreId){
+            $("#deleteNews_sure_js").attr("data-id",bmstoreId);
             $("#deleteNewsModal").modal("show");
         }
 
     }
     var triggerFileUpload = function (){
-        $("#newsFileInput").trigger("click");
+        $("#bmstoreFileInput").trigger("click");
     }
     var uploadNewsImg = function (){
         var _this = $(this);
@@ -215,21 +215,21 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                 url: URL.baseURLForward1 + 'api/images/upload',
                 type:"post",
                 secureuri: false,
-                fileElementId: 'newsFileInput',
+                fileElementId: 'bmstoreFileInput',
                 data: {apikey:'flzxsqcysyhljt',prefix:'jianing',token:tokenTmp},
                 //dataType: 'json',
                 success: function(data, status){
                     if(status=="success"){
                         var imgUrl=JSON.parse($(data).find("pre").html()).data[0];
-                        $("#newsUrl").val(imgUrl);
-                        $("#newsFileInput").hide();
-                        $("#newsImgPreview").attr("src",imgUrl).show();
+                        $("#bmstoreUrl").val(imgUrl);
+                        $("#bmstoreFileInput").hide();
+                        $("#bmstoreImgPreview").attr("src",imgUrl).show();
                     }
                     // //alert($(data).find("body").html())
                     // var thisdata = JSON.parse($(data).find("pre").html()).data[0];
-                    // $("#newsUrl").val(data.result.filePath);
-                    // $("#newsFileInput").hide();
-                    // $("#newsImgPreview").attr("src",data.result.filePath).show();
+                    // $("#bmstoreUrl").val(data.result.filePath);
+                    // $("#bmstoreFileInput").hide();
+                    // $("#bmstoreImgPreview").attr("src",data.result.filePath).show();
                     // var oldlist = localStorage.getItem('phoneList');
                     // var oldcommentlist=localStorage.getItem('commentList')
                     // if(!oldlist || oldlist.length==0){
@@ -255,14 +255,14 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             //     url: URL.baseURLForward + 'cmsContentFile/addFile.action',
             //     type:"post",
             //     secureuri: false,
-            //     fileElementId: "newsFileInput",
+            //     fileElementId: "bmstoreFileInput",
             //     data: {token: BaseCookie.getToken()},
             //     dataType: 'json',
             //     success: function(data, status){
             //         if(status == "success"){
-            //             $("#newsUrl").val(data.result.filePath);
-            //             $("#newsFileInput").hide();
-            //             $("#newsImgPreview").attr("src",data.result.filePath).show();
+            //             $("#bmstoreUrl").val(data.result.filePath);
+            //             $("#bmstoreFileInput").hide();
+            //             $("#bmstoreImgPreview").attr("src",data.result.filePath).show();
             //         }else{
             //             console.log(status);
             //         }
@@ -272,7 +272,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     }
     var saveSortNews =function (){
         var sortStr=""
-        $("#news_list_table tbody tr").each(function (index,item){
+        $("#bmstore_list_table tbody tr").each(function (index,item){
             sortStr+=$(item).attr("data-id")+","
         });
         if(sortStr.length>0){
@@ -327,10 +327,10 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         $("#saveSortNewsBtn").addClass('hide');
     }
     var resetEditPanel = function (){
-        $("#newsUrl").val("");
+        $("#bmstoreUrl").val("");
         $("#target_href").val("");
-        $("#newsFileInput").show();
-        $("#newsImgPreview").hide();
+        $("#bmstoreFileInput").show();
+        $("#bmstoreImgPreview").hide();
         $("#addNews_save_js").removeAttr("data-id");
     };
     var resetDeletePanel = function () {
@@ -340,11 +340,11 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     /**
      * 渲染页面架构
      */
-    var renderNewsManager = function (){
+    var renderbmstoreManager = function (){
         Render.render({
             wrap: $("#main-content"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager,
+                tmplName: TMPL.tmpl_bmstore_manager,
                 tmplData:{}
             },
             afterRender: function (){
@@ -355,7 +355,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         });
     };
     /**
-     * 请求news列表数据
+     * 请求bmstore列表数据
      */
     var requestNewsListPaginationInfo = function (param){
         currentPageTemp=1;
@@ -387,7 +387,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
 
     };
     /**
-     * 请求news列表数据
+     * 请求bmstore列表数据
      */
     var requestNewsList = function (param){
         var param= $.extend(userInfo(),param || {});
@@ -451,9 +451,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
 
 
         Render.render({
-            wrap: $("#news_list_table_tbody"),
+            wrap: $("#bmstore_list_table_tbody"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager_list,
+                tmplName: TMPL.tmpl_bmstore_manager_list,
                 tmplData:data
             },
             afterRender: function (){
@@ -468,7 +468,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         Render.render({
             wrap: $("#main-content"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager_edit,
+                tmplName: TMPL.tmpl_bmstore_manager_edit,
                 tmplData:{}
             },
             afterRender: function (){
@@ -478,7 +478,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                     editor = UE.getEditor('container',{
                         UEDITOR_HOME_URL:basePath,
                       //  imageActionName:"action1/api/images/upload", //必填 否则不触发上传事件
-                       // imageFieldName:"file",
+                       imageFieldName:"file",
                         //imageActionUrl:"action1/api/images/upload"
                        // imageUrl:"/action1/api/images/upload11"
                         // langPath:basePath+"lang/",
@@ -495,9 +495,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             }
         });
     };
-    var requestNewsDetail = function (newsId){
-        if(newsId){
-            var param=$.extend({id:newsId},{common:userInfo()});
+    var requestNewsDetail = function (bmstoreId){
+        if(bmstoreId){
+            var param=$.extend({id:bmstoreId},{common:userInfo()});
             $.ajax({
                 url:URL.baseURLForward+"back/decoratenew/decorateNewInfo", // URL.baseURL9 + 'jijing_answers/web_mark',
                 data: JSON.stringify(param),
@@ -518,7 +518,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             Render.render({
                 wrap: $("#main-content"),
                 tmpl: {
-                    tmplName: TMPL.tmpl_news_manager_edit,
+                    tmplName: TMPL.tmpl_bmstore_manager_edit,
                     tmplData:{}
                 },
                 afterRender: function (){
@@ -536,16 +536,16 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                         });
                         window.setTimeout(function (){
 
-                            $("#newsTitle").val(data.title || "");
-                            $("#newsAuthor").val(data.author || "");
-                            $("#newsTypeSelect").val(data.type || "");
+                            $("#bmstoreTitle").val(data.title || "");
+                            $("#bmstoreAuthor").val(data.author || "");
+                            $("#bmstoreTypeSelect").val(data.type || "");
                             $("#scoreSelect").val(data.score || "");
-                            // $("#newsDesc").val(data.description || "");
-                            // $("#newsImgPreview").attr("src",data.cover).show();
-                            $("#newsFileInput").hide();
-                            $("#newsUrl").val(data.focusimg);
+                            // $("#bmstoreDesc").val(data.description || "");
+                            // $("#bmstoreImgPreview").attr("src",data.cover).show();
+                            $("#bmstoreFileInput").hide();
+                            $("#bmstoreUrl").val(data.focusimg);
                             $("#addNewsSaveBtn").attr("data-id",data.id);
-                            // $("#newsTypeSelect").val(data.)
+                            // $("#bmstoreTypeSelect").val(data.)
                         },1000)
                     },100);
                 }
@@ -553,25 +553,25 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         }
     };
     var validAndReturnNewsParam = function (){
-        var title=$("#newsTitle").val();
-        var author=$("#newsAuthor").val();
-        var type=$("#newsTypeSelect").val();
+        var title=$("#bmstoreTitle").val();
+        var author=$("#bmstoreAuthor").val();
+        var type=$("#bmstoreTypeSelect").val();
         var score=$("#scoreSelect").val();
-        var description =$("#newsDesc").val();
-        var focusimg=$("#newsUrl").val();
+        var description =$("#bmstoreDesc").val();
+        var focusimg=$("#bmstoreUrl").val();
         var content=UE.getEditor('container').getContent();
         var contentTxt=UE.getEditor('container').getContentTxt();
 
         if(!title){
-            Util.showTipMsg("请输入新闻标题");
+            Util.showTipMsg("请输入材料名称");
             return false;
         }
         if(!author){
-            Util.showTipMsg("请输入文章作者");
+            Util.showTipMsg("请输入编辑作者");
             return false;
         }
         if(!type){
-            Util.showTipMsg("请选择新闻类型");
+            Util.showTipMsg("请选择材料类型");
             return false;
         }
         // if(!description){
@@ -579,25 +579,25 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         //     return false;
         // }
         if(!focusimg){
-            Util.showTipMsg("请上传新闻图片");
+            Util.showTipMsg("请上传材料图片");
             return false;
         }
         if(!contentTxt){
-            Util.showTipMsg("请输入新闻正文内容");
+            Util.showTipMsg("请输入材料介绍内容");
             return false;
         }
 
         var param={
             title:title,
             author:author,
-            flag:1,
+            flag:2,
             type:type,
             description:description,
             score:score,
             focus:1,
             focusimg:focusimg,
             details:content,
-            tagIds:$("#newsTypeSelect").find("option:selected").text()
+            tagIds:$("#bmstoreTypeSelect").find("option:selected").text()
 
         }
         if($("#addNewsSaveBtn").attr("data-id")){
@@ -611,7 +611,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         if(param){
             localStorage.setItem("preview_title",param.title);
             localStorage.setItem("preview_author",param.author);
-            localStorage.setItem("preview_categoryName",$("#newsTypeSelect").text());
+            localStorage.setItem("preview_categoryName",$("#bmstoreTypeSelect").text());
             localStorage.setItem("preview_cover",param.cover);
             localStorage.setItem("preview_content",param.content);
             window.open("preview.html","_blank");
@@ -631,6 +631,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         return {userId:userId,token:token,userName:userName};
     };
     var addNews = function (param){
+        debugger;
         if(param){
             param.common=userInfo();
             //param.categoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);

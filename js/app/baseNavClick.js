@@ -9,10 +9,10 @@ define(['jquery'], function($, Login, Render, URL) {
         })
     };
     var building_materials_store=function (){
-        refreshLeftMenu("news_manager_li");
+        refreshLeftMenu("bm_store_manager_li");
         // $("#main-content").html('<img class="weclome_img" src="./img/timg.jpg">');
-        require(['app/newsManager/news_manager', 'jqGrid','jgGrid_local'], function(NewsManager) {
-            NewsManager.init({router:router});
+        require(['app/bmStoreManager/bmstore_manager', 'jqGrid','jgGrid_local'], function(BmStoreManager) {
+            BmStoreManager.init({router:router});
         })
     };
 
@@ -21,7 +21,7 @@ define(['jquery'], function($, Login, Render, URL) {
           window.location.href=window.location.href.split("#")[0]+"#news_manager";
         });
         $(document).on('click', '#bm_store_manager_li', function () {
-            window.location.href=window.location.href.split("#")[0]+"#news_manager";
+            window.location.href=window.location.href.split("#")[0]+"#building_materials_store";
         });
     }
     var refreshLeftMenu = function (menuId){
