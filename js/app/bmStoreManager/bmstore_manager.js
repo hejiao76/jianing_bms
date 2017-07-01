@@ -12,9 +12,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         router,
         editor,
         TMPL = {
-            tmpl_bmstore_manager: 'app/bmstoreManager/tmpl_bmstore_manager',
-            tmpl_bmstore_manager_list: 'app/bmstoreManager/tmpl_bmstore_manager_list',
-            tmpl_bmstore_manager_edit: 'app/bmstoreManager/tmpl_bmstore_manager_edit'
+            tmpl_bmstore_manager: 'app/bmStoreManager/tmpl_bmstore_manager',
+            tmpl_bmstore_manager_list: 'app/bmStoreManager/tmpl_bmstore_manager_list',
+            tmpl_bmstore_manager_edit: 'app/bmStoreManager/tmpl_bmstore_manager_edit'
         };
 
     var init = function(conf) {
@@ -394,7 +394,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         param.pageSize=pageRecorders;
         $.ajax({
             url:URL.baseURLForward+"back/decoratenew/decorateNewList", // URL.baseURL9 + 'jijing_answers/web_mark',
-            data: JSON.stringify({common:param}),
+            data: JSON.stringify({common:param,flag:2}),
             type: 'post',
             contentType:"application/json",
             success: function (response){

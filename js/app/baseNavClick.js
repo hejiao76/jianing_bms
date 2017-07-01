@@ -16,12 +16,21 @@ define(['jquery'], function($, Login, Render, URL) {
         })
     };
 
+    var gongzhang_manager = function (){
+        require(['app/gongzhangManager/gongzhang_manager', 'jqGrid','jgGrid_local'], function(GongZhangManager) {
+            GongZhangManager.init({router:router});
+        })
+    }
+
     var initEvent = function() {
         $(document).on('click', '#news_manager_li', function () {
           window.location.href=window.location.href.split("#")[0]+"#news_manager";
         });
         $(document).on('click', '#bm_store_manager_li', function () {
             window.location.href=window.location.href.split("#")[0]+"#building_materials_store";
+        });
+        $(document).on('click', '#gongzhang_manager_li', function () {
+            window.location.href=window.location.href.split("#")[0]+"#gongzhang_manager";
         });
     }
     var refreshLeftMenu = function (menuId){
@@ -33,7 +42,8 @@ define(['jquery'], function($, Login, Render, URL) {
     initEvent();
     var routes = {
         '/news_manager': news_manager,
-        '/building_materials_store':building_materials_store
+        '/building_materials_store':building_materials_store,
+        '/gongzhang_manager':gongzhang_manager
     }
     var router = Router(routes);
     router.init('');

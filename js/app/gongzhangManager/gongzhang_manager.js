@@ -12,9 +12,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         router,
         editor,
         TMPL = {
-            tmpl_news_manager: 'app/newsManager/tmpl_news_manager',
-            tmpl_news_manager_list: 'app/newsManager/tmpl_news_manager_list',
-            tmpl_news_manager_edit: 'app/newsManager/tmpl_news_manager_edit'
+            tmpl_gongzhang_manager: 'app/gongzhangManager/tmpl_gongzhang_manager',
+            tmpl_gongzhang_manager_list: 'app/gongzhangManager/tmpl_gongzhang_manager_list',
+            tmpl_gongzhang_manager_edit: 'app/gongzhangManager/tmpl_gongzhang_manager_edit'
         };
 
     var init = function(conf) {
@@ -58,10 +58,10 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     var initRouter = function (){
         if(router){
             console.log("initRouter");
-            router.on("once","/news_manager_edit/:newsId",function (newsId){
-                requestNewsDetail(newsId)
+            router.on("once","/gongzhang_manager_edit/:gongzhangId",function (gongzhangId){
+                requestNewsDetail(gongzhangId)
             }); //编辑路由回调
-            router.on("once","/news_manager_add",showAddNewsPanel); //编辑路由回调
+            router.on("once","/gongzhang_manager_add",showAddNewsPanel); //编辑路由回调
         }
     };
     var initPagination = function(totalCount,opt) {
@@ -84,21 +84,21 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     }
     var initEvent = function() {
         $(document).off("click","#addNewsBtn").on("click","#addNewsBtn",function (){
-            window.location.href = window.location.href.split("#")[0] + "#news_manager_add";
+            window.location.href = window.location.href.split("#")[0] + "#gongzhang_manager_add";
         });
         $(document).off("click","#previewNewsBtn").on("click","#previewNewsBtn",previewNewsFn);
         $(document).off("click","#addNewsSaveBtn").on("click","#addNewsSaveBtn",addNewsFn);
         $(document).off("click",".editNews_js").on("click",".editNews_js",function (){
-            var newsId=$(this).attr("data-id");
-            if(newsId){
-                window.location.href = window.location.href.split("#")[0] + "#news_manager_edit/"+newsId;
+            var gongzhangId=$(this).attr("data-id");
+            if(gongzhangId){
+                window.location.href = window.location.href.split("#")[0] + "#gongzhang_manager_edit/"+gongzhangId;
             }
         })
 
         $(document).off("click","#sortNewsBtn").on("click","#sortNewsBtn",showSortNewsCol);
         $(document).off("click","#saveSortNewsBtn").on("click","#saveSortNewsBtn",saveSortNews);
-        $(document).off("change","#newsFileInput").on("change","#newsFileInput",uploadNewsImg);
-        $(document).off("click","#newsImgPreview").on("click","#newsImgPreview",triggerFileUpload);
+        $(document).off("change","#gongzhangFileInput").on("change","#gongzhangFileInput",uploadNewsImg);
+        $(document).off("click","#gongzhangImgPreview").on("click","#gongzhangImgPreview",triggerFileUpload);
         $(document).off("click",".status_span_js").on("click",".status_span_js",statusSpanClickFn);
         $(document).off("click",".setFirstShow_span_js").on("click",".setFirstShow_span_js",setFirstShowSpanClickFn)
 
@@ -112,15 +112,15 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         // $(document).off("click","#cancelModal .surebtn_js").on("click","#cancelModal .surebtn_js",toCancelOrder);
     };
     var toNewsList = function (){
-        window.location.href = window.location.href.split("#")[0]+"#news_manager";
+        window.location.href = window.location.href.split("#")[0]+"#gongzhang_manager";
     }
     /**
      * 同步新闻模块ID
      */
     var asyncNewsModuleId = function (){
         renderNewsManager();
-        // var newsCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
-        // if(newsCategoryId==null){
+        // var gongzhangCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
+        // if(gongzhangCategoryId==null){
         //     var param={parentId:0}
         //     $.ajax({
         //         url:URL.baseURLForward+"cmsCategory/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
@@ -153,9 +153,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     };
     var requestSecondModuleList = function (){
         return;
-        var newsCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
-        if(newsCategoryId!=null){
-            var param={parentId:newsCategoryId}
+        var gongzhangCategoryId=localStorage.getItem(Final.NEWS_CATEGORY_ID);
+        if(gongzhangCategoryId!=null){
+            var param={parentId:gongzhangCategoryId}
             $.ajax({
                 url:URL.baseURLForward+"cmsCategory/getList.action", // URL.baseURL9 + 'jijing_answers/web_mark',
                 data: param,
@@ -180,20 +180,20 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                 var item=data[i];
                 str+='<option value="'+item.id+'">'+item.name+'</option>'
             }
-            $("#newsTypeSelect").html(str);
+            $("#gongzhangTypeSelect").html(str);
         }
 
     }
     var showDeleteNews = function (){
-        var newsId=$(this).attr("data-id");
-        if(newsId){
-            $("#deleteNews_sure_js").attr("data-id",newsId);
+        var gongzhangId=$(this).attr("data-id");
+        if(gongzhangId){
+            $("#deleteNews_sure_js").attr("data-id",gongzhangId);
             $("#deleteNewsModal").modal("show");
         }
 
     }
     var triggerFileUpload = function (){
-        $("#newsFileInput").trigger("click");
+        $("#gongzhangFileInput").trigger("click");
     }
     var uploadNewsImg = function (){
         var _this = $(this);
@@ -215,21 +215,21 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                 url: URL.baseURLForward1 + 'api/images/upload',
                 type:"post",
                 secureuri: false,
-                fileElementId: 'newsFileInput',
+                fileElementId: 'gongzhangFileInput',
                 data: {apikey:'flzxsqcysyhljt',prefix:'jianing',token:tokenTmp},
                 //dataType: 'json',
                 success: function(data, status){
                     if(status=="success"){
                         var imgUrl=JSON.parse($(data).find("pre").html()).data[0];
-                        $("#newsUrl").val(imgUrl);
-                        $("#newsFileInput").hide();
-                        $("#newsImgPreview").attr("src",imgUrl).show();
+                        $("#gongzhangUrl").val(imgUrl);
+                        $("#gongzhangFileInput").hide();
+                        $("#gongzhangImgPreview").attr("src",imgUrl).show();
                     }
                     // //alert($(data).find("body").html())
                     // var thisdata = JSON.parse($(data).find("pre").html()).data[0];
-                    // $("#newsUrl").val(data.result.filePath);
-                    // $("#newsFileInput").hide();
-                    // $("#newsImgPreview").attr("src",data.result.filePath).show();
+                    // $("#gongzhangUrl").val(data.result.filePath);
+                    // $("#gongzhangFileInput").hide();
+                    // $("#gongzhangImgPreview").attr("src",data.result.filePath).show();
                     // var oldlist = localStorage.getItem('phoneList');
                     // var oldcommentlist=localStorage.getItem('commentList')
                     // if(!oldlist || oldlist.length==0){
@@ -255,14 +255,14 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             //     url: URL.baseURLForward + 'cmsContentFile/addFile.action',
             //     type:"post",
             //     secureuri: false,
-            //     fileElementId: "newsFileInput",
+            //     fileElementId: "gongzhangFileInput",
             //     data: {token: BaseCookie.getToken()},
             //     dataType: 'json',
             //     success: function(data, status){
             //         if(status == "success"){
-            //             $("#newsUrl").val(data.result.filePath);
-            //             $("#newsFileInput").hide();
-            //             $("#newsImgPreview").attr("src",data.result.filePath).show();
+            //             $("#gongzhangUrl").val(data.result.filePath);
+            //             $("#gongzhangFileInput").hide();
+            //             $("#gongzhangImgPreview").attr("src",data.result.filePath).show();
             //         }else{
             //             console.log(status);
             //         }
@@ -272,7 +272,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     }
     var saveSortNews =function (){
         var sortStr=""
-        $("#news_list_table tbody tr").each(function (index,item){
+        $("#gongzhang_list_table tbody tr").each(function (index,item){
             sortStr+=$(item).attr("data-id")+","
         });
         if(sortStr.length>0){
@@ -327,10 +327,10 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         $("#saveSortNewsBtn").addClass('hide');
     }
     var resetEditPanel = function (){
-        $("#newsUrl").val("");
+        $("#gongzhangUrl").val("");
         $("#target_href").val("");
-        $("#newsFileInput").show();
-        $("#newsImgPreview").hide();
+        $("#gongzhangFileInput").show();
+        $("#gongzhangImgPreview").hide();
         $("#addNews_save_js").removeAttr("data-id");
     };
     var resetDeletePanel = function () {
@@ -344,7 +344,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         Render.render({
             wrap: $("#main-content"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager,
+                tmplName: TMPL.tmpl_gongzhang_manager,
                 tmplData:{}
             },
             afterRender: function (){
@@ -355,14 +355,14 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         });
     };
     /**
-     * 请求news列表数据
+     * 请求gongzhang列表数据
      */
     var requestNewsListPaginationInfo = function (param){
         currentPageTemp=1;
         var param= $.extend(userInfo(),param || {});
         param.pageSize=pageRecorders;
         $.ajax({
-            url:URL.baseURLForward+"back/decoratenew/decorateNewList", // URL.baseURL9 + 'jijing_answers/web_mark',
+            url:URL.baseURLForward+"/back/user/userList", // URL.baseURL9 + 'jijing_answers/web_mark',
             data: JSON.stringify({common:param}),
             type: 'POST',
             contentType:"application/json",
@@ -387,13 +387,13 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
 
     };
     /**
-     * 请求news列表数据
+     * 请求gongzhang列表数据
      */
     var requestNewsList = function (param){
         var param= $.extend(userInfo(),param || {});
         param.pageSize=pageRecorders;
         $.ajax({
-            url:URL.baseURLForward+"back/decoratenew/decorateNewList", // URL.baseURL9 + 'jijing_answers/web_mark',
+            url:URL.baseURLForward+"/back/user/userList", // URL.baseURL9 + 'jijing_answers/web_mark',
             data: JSON.stringify({common:param,flag:1}),
             type: 'post',
             contentType:"application/json",
@@ -451,9 +451,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
 
 
         Render.render({
-            wrap: $("#news_list_table_tbody"),
+            wrap: $("#gongzhang_list_table_tbody"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager_list,
+                tmplName: TMPL.tmpl_gongzhang_manager_list,
                 tmplData:data
             },
             afterRender: function (){
@@ -468,7 +468,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         Render.render({
             wrap: $("#main-content"),
             tmpl: {
-                tmplName: TMPL.tmpl_news_manager_edit,
+                tmplName: TMPL.tmpl_gongzhang_manager_edit,
                 tmplData:{}
             },
             afterRender: function (){
@@ -495,9 +495,9 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             }
         });
     };
-    var requestNewsDetail = function (newsId){
-        if(newsId){
-            var param=$.extend({id:newsId},{common:userInfo()});
+    var requestNewsDetail = function (gongzhangId){
+        if(gongzhangId){
+            var param=$.extend({id:gongzhangId},{common:userInfo()});
             $.ajax({
                 url:URL.baseURLForward+"back/decoratenew/decorateNewInfo", // URL.baseURL9 + 'jijing_answers/web_mark',
                 data: JSON.stringify(param),
@@ -518,7 +518,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             Render.render({
                 wrap: $("#main-content"),
                 tmpl: {
-                    tmplName: TMPL.tmpl_news_manager_edit,
+                    tmplName: TMPL.tmpl_gongzhang_manager_edit,
                     tmplData:{}
                 },
                 afterRender: function (){
@@ -536,16 +536,16 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
                         });
                         window.setTimeout(function (){
 
-                            $("#newsTitle").val(data.title || "");
-                            $("#newsAuthor").val(data.author || "");
-                            $("#newsTypeSelect").val(data.type || "");
+                            $("#gongzhangTitle").val(data.title || "");
+                            $("#gongzhangAuthor").val(data.author || "");
+                            $("#gongzhangTypeSelect").val(data.type || "");
                             $("#scoreSelect").val(data.score || "");
-                            // $("#newsDesc").val(data.description || "");
-                            // $("#newsImgPreview").attr("src",data.cover).show();
-                            $("#newsFileInput").hide();
-                            $("#newsUrl").val(data.focusimg);
+                            // $("#gongzhangDesc").val(data.description || "");
+                            // $("#gongzhangImgPreview").attr("src",data.cover).show();
+                            $("#gongzhangFileInput").hide();
+                            $("#gongzhangUrl").val(data.focusimg);
                             $("#addNewsSaveBtn").attr("data-id",data.id);
-                            // $("#newsTypeSelect").val(data.)
+                            // $("#gongzhangTypeSelect").val(data.)
                         },1000)
                     },100);
                 }
@@ -553,12 +553,12 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         }
     };
     var validAndReturnNewsParam = function (){
-        var title=$("#newsTitle").val();
-        var author=$("#newsAuthor").val();
-        var type=$("#newsTypeSelect").val();
+        var title=$("#gongzhangTitle").val();
+        var author=$("#gongzhangAuthor").val();
+        var type=$("#gongzhangTypeSelect").val();
         var score=$("#scoreSelect").val();
-        var description =$("#newsDesc").val();
-        var focusimg=$("#newsUrl").val();
+        var description =$("#gongzhangDesc").val();
+        var focusimg=$("#gongzhangUrl").val();
         var content=UE.getEditor('container').getContent();
         var contentTxt=UE.getEditor('container').getContentTxt();
 
@@ -597,7 +597,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
             focus:1,
             focusimg:focusimg,
             details:content,
-            tagIds:$("#newsTypeSelect").find("option:selected").text()
+            tagIds:$("#gongzhangTypeSelect").find("option:selected").text()
 
         }
         if($("#addNewsSaveBtn").attr("data-id")){
@@ -611,7 +611,7 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         if(param){
             localStorage.setItem("preview_title",param.title);
             localStorage.setItem("preview_author",param.author);
-            localStorage.setItem("preview_categoryName",$("#newsTypeSelect").text());
+            localStorage.setItem("preview_categoryName",$("#gongzhangTypeSelect").text());
             localStorage.setItem("preview_cover",param.cover);
             localStorage.setItem("preview_content",param.content);
             window.open("preview.html","_blank");
@@ -668,7 +668,6 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
     var deleteNewsRequest = function (param){
         if(param){
             param=$.extend(param,{common:userInfo()})
-            debugger;
             $.ajax({
                 url:URL.baseURLForward+"back/decoratenew/delDecorateNew",
                 data: JSON.stringify(param),
@@ -720,20 +719,19 @@ define(['common/render', 'app/baseURL', 'baseCookie', 'app/baseFinal','common/ut
         var id=$(this).attr("data-id")
         var status=$(this).attr("data-isFirst");
         if(id){
-            firstShowRequest({id:id});
+            firstShowRequest({id:id,status:status});
         }
     }
     var firstShowRequest = function (param){
         if(param.id){
+            param.common=userInfo()
             $.ajax({
-                url:URL.baseURLForward+"cmsContent/recommendContent.action",
-                data: param,
+                url:URL.baseURLForward+"/back/user/updateStatus",
+                data: JSON.stringify(param),
+                contentType:"application/json",
                 type: 'post',
-                headers: {
-                    token:tokenTmp
-                },
                 success: function (response){
-                    if(response.status==0){
+                    if(response.code==200){
                         Util.showTipMsg("操作成功",requestNewsList,this,{currentPage:currentPageTemp});
                     }else{
                         console.log("请求异常");
